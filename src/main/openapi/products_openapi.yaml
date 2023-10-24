@@ -1,0 +1,104 @@
+---
+openapi: 3.0.0
+info:
+  title: Prue-ba Java 1
+  description: Service API for products
+  version: "1.0"
+servers:
+  - url: http://localhost:8086/api/v1
+tags:
+  - name: prices
+    description: Service to consume product prices
+ 
+paths:
+  /prices/info:
+    get:
+      tags:
+        - prices
+      summary: Return product price information
+      description: Return product price information
+      operationId: pricesInfo
+      parameters:
+        - name: system_date
+          in: query
+          description: System Date
+          required: true
+          schema:
+            type: string
+            example: "2023-10-19-23.59.89"
+        - name: product_id
+          in: query
+          description: Product Code
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 35466
+        - name: brand_id
+          in: query
+          description: Brand Code
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 1
+      responses:
+        "200":
+          description: Operation successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponsePricesInfo'
+        "400":
+          description: Error in the operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+components:
+  schemas:
+    #Response
+    BadRequest:
+      description: Malformed request
+      allOf:
+        - $ref: '#/components/schemas/ErrorResponse'         
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "999"
+        code:
+          type: string
+          example: "Error"
+    ResponsePricesInfo:
+      required:
+        - product_id
+        - brand_id
+        - price_list
+        - system_date
+        - final_price
+      type: object
+      properties:
+        product_id:
+          type: integer
+          format: int64
+          example: 35466
+          description: Product Code
+        brand_id:
+          type: integer
+          format: int64
+          example: 1
+          description: Brand Code
+        price_list:
+          type: string
+          example: "1"
+          description: Price list
+        system_date:
+          type: string
+          example: "2023-10-19-23.59.89"
+        final_price:
+          type: number
+          format: double
+          example: 35.50
+          description: Final price to apply
